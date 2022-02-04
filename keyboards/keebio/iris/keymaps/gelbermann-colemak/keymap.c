@@ -10,15 +10,15 @@
 // Utils
 #define KC_UNDS   LSFT(KC_MINS)  // _
 
-enum custom_keycodes {
-  /* Layers: */
-  _COLEMAK = SAFE_RANGE,
+enum layers_keycodes {
+  _COLEMAK,
   _QWERTY,
   _LOWER,
   _RAISE,
   _NAV,
+};
 
-  /* Macros: */
+enum macros_keycodes {
   _SW_LANG,
   _SHFT_L,
   _SHFT_R,
@@ -100,45 +100,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-    case COLEMAK_DHM:
-      if (record->event.pressed) {
-        set_single_persistent_default_layer(_COLEMAK);
-      }
-      return false;
 
-    case QWERTY:
-      if (record->event.pressed) {
-        set_single_persistent_default_layer(_QWERTY);
-      }
-      return false;
-
-    case LOWER:
-      handle_regular_layers(_LOWER, record->event.pressed);
-      return false;
-
-    case RAISE:
-      handle_regular_layers(_RAISE, record->event.pressed);
-      return false;
-
-    case NAV:
-      if (record->event.pressed) {
-        layer_on(_NAV);
-      } else {
-        layer_off(_NAV);
-      }
-      return false;
-
-    default:
-      handle_macros(keycode, record);
-      break;
-  }
-
-  return true;
-}
-
-void handle_regular_layers(enum custom_keycodes layer, bool pressed) {
+void handle_regular_layers(enum layers_keycodes layer, bool pressed) {
     if (pressed) {
         layer_on(layer);
         update_tri_layer(_LOWER, _RAISE, _NAV);
@@ -174,6 +137,44 @@ void handle_macros(uint16_t keycode, keyrecord_t *record) {
             SEND_STRING(SS_DOWN(X_LALT) SS_DOWN(X_LSHIFT) SS_TAP(X_RIGHT) SS_UP(X_LSHIFT) SS_UP(X_LALT));
             break;
     }
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+    case COLEM:
+      if (record->event.pressed) {
+        set_single_persistent_default_layer(_COLEMAK);
+      }
+      return false;
+
+    case QWERT:
+      if (record->event.pressed) {
+        set_single_persistent_default_layer(_QWERTY);
+      }
+      return false;
+
+    case LOWER:
+      handle_regular_layers(_LOWER, record->event.pressed);
+      return false;
+
+    case RAISE:
+      handle_regular_layers(_RAISE, record->event.pressed);
+      return false;
+
+    case NAV:
+      if (record->event.pressed) {
+        layer_on(_NAV);
+      } else {
+        layer_off(_NAV);
+      }
+      return false;
+
+    default:
+      handle_macros(keycode, record);
+      break;
+  }
+
+  return true;
 }
 
 // TODO: consider layer-change code for per-layer rgb lighting: https://docs.qmk.fm/#/custom_quantum_functions?id=layer-change-code
