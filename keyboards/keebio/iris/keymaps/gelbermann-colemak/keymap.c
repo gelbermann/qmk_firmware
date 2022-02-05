@@ -8,7 +8,10 @@
 #define NAV       TG(_NAV)
 
 // Utils
-#define KC_UNDS   LSFT(KC_MINS)  // _
+#define KC_UNDS                 LSFT(KC_MINS)  // _
+#define KC_NUM                  KC_NUMLOCK
+#define SWITCH_KEYBOARD_LAYOUT  KB_LYOT
+
 
 enum layers_keycodes {
   _COLEMAK_DH,
@@ -19,12 +22,20 @@ enum layers_keycodes {
 };
 
 enum macros_keycodes {
-  SW_LANG = SAFE_RANGE,
+  SWITCH_KEYBOARD_LAYOUT = SAFE_RANGE,
   LALT_L,
   LALT_R,
   A_SHFT_L,
   A_SHFT_R,
 };
+
+
+struct language_state_t {
+    bool english;
+    bool colemak;
+};
+struct language_state_t language_state = {true, true};
+
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -74,13 +85,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
      _______, _______, _______, _______, _______, COLEM,                              QWERT,   KC_NUM,  _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_CAPS, _______, KC_AMPR, KC_ASTR, KC_TILD, _______,                            _______, KC_PGUP, KC_PGDN, _______, _______, _______,
+     KC_CAPS, _______, KC_AMPR, KC_ASTR, KC_GRAVE,KC_TILD,                            _______, KC_PGUP, KC_PGDN, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      _______, _______, KC_DLR,  KC_PERC, KC_CIRC, KC_MINS,                            KC_EQL,  KC_UP,   KC_LEFT, KC_RGHT, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, KC_EXLM, KC_AT,   KC_HASH, KC_UNDS, SW_LANG,          _______, KC_PPLS, KC_DOWN, NAV,     _______, _______, _______,
+     _______, _______, KC_EXLM, KC_AT,   KC_HASH, KC_UNDS, KB_LYOT,          _______, KC_PPLS, KC_DOWN, NAV,     _______, _______, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                                    _______, _______, SW_LANG,                  _______, _______, _______
+                                    _______, _______, KB_LYOT,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   ),
 
@@ -100,49 +111,90 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
+void toggle_os_language(void) {
+    language_state.english = !language_state.english;
+
+    register_code(KC_LGUI);
+    register_code(KC_K);
+    unregister_code(KC_K);
+    unregister_code(KC_LGUI);
+}
+
+void toggle_keyboard_layout(void) {
+    language_state.colemak = !language_state.colemak;
+
+    set_single_persistent_default_layer(
+        language_state.colemak
+            ? _COLEMAK_DH
+            : _QWERTY
+    );
+}
+
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    // https://docs.qmk.fm/#/feature_macros?id=using-macros-in-c-keymaps
     switch(keycode) {
-        case SW_LANG:
-            // register_code(KC_LGUI);
-            // register_code(KC_K);
-            // unregister_code(KC_K);
-            // unregister_code(KC_LGUI);
+        // TODO: following two cases can be united with `toggle_keyboard_layout` with some careful thought
+        case _COLEMAK_DH:
+            if (record->event.pressed) {
+                language_state.colemak = true;
+                return false;
+            }
+            break;
 
-            register_code(KC_LGUI);
-            register_code(KC_K);
-            return true;
+        case _QWERTY:
+            if (record->event.pressed) {
+                language_state.colemak = false;
+                return false;
+            }
+            break;
 
-            // SEND_STRING(SS_DOWN(X_LGUI) SS_TAP(X_K) SS_UP(X_LGUI));
-            // TODO: if this doesn't work, try adding SS_DELAY()
-            return false;
+        // https://docs.qmk.fm/#/feature_macros?id=using-macros-in-c-keymaps
+        case SWITCH_KEYBOARD_LAYOUT:
+            if (record->event.pressed) {
+                toggle_keyboard_layout();
+                toggle_os_language();
+                return false;
+            }
+            break;
 
         case LALT_L:
-            SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_LEFT) SS_UP(X_LALT));
-            return false;
+            if (record->event.pressed) {
+                SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_LEFT) SS_UP(X_LALT));
+                return false;
+            }
+            break;
 
         case LALT_R:
-            SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_RIGHT) SS_UP(X_LALT));
-            return false;
+            if (record->event.pressed) {
+                SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_RIGHT) SS_UP(X_LALT));
+                return false;
+            }
+            break;
 
         case A_SHFT_L:
-            SEND_STRING(SS_DOWN(X_LALT) SS_DOWN(X_LSHIFT) SS_TAP(X_LEFT) SS_UP(X_LSHIFT) SS_UP(X_LALT));
-            return false;
+            if (record->event.pressed) {
+                SEND_STRING(SS_DOWN(X_LALT) SS_DOWN(X_LSHIFT) SS_TAP(X_LEFT) SS_UP(X_LSHIFT) SS_UP(X_LALT));
+                return false;
+            }
+            break;
 
         case A_SHFT_R:
-            SEND_STRING(SS_DOWN(X_LALT) SS_DOWN(X_LSHIFT) SS_TAP(X_RIGHT) SS_UP(X_LSHIFT) SS_UP(X_LALT));
-            return false;
+            if (record->event.pressed) {
+                SEND_STRING(SS_DOWN(X_LALT) SS_DOWN(X_LSHIFT) SS_TAP(X_RIGHT) SS_UP(X_LSHIFT) SS_UP(X_LALT));
+                return false;
+            }
+            break;
     }
 
-  return true;
+    return true;
 }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-  return update_tri_layer_state(state, _LOWER, _RAISE, _NAV);
+    return update_tri_layer_state(state, _LOWER, _RAISE, _NAV); // TODO: NOT WORKING ATM
 }
 
 // TODO: consider layer-change code for per-layer rgb lighting: https://docs.qmk.fm/#/custom_quantum_functions?id=layer-change-code
+// This would be VERY useful for debugging colemak/qwerty-hebrew/english issues!
 
 
 
@@ -151,15 +203,12 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 // TODO:
 /* Current status is:
-   1. SW_LANG macro doesn't work. Possibly all macros.
-      I added the missing macros to NAV layer for verification.
+   2. NAV layer doesn't work at all.
 
-   2. NAV layer doesn't work via raise layer key.
-
-   3. Need to further customize layer change:
+   3. WIP: customizing layer change:
       I need to always be able to switch language via macro, and only do it via macro.
       This way I can expand the macro to also switch between qwerty-colemak, so that I'm always in english-colemak and hebrew-qwerty.
-      This can be acheived by having some boolean state for english/hebrew, that is checked and updated on each SW_LANG execution,
+      This can be acheived by having some boolean state for english/hebrew, that is checked and updated on each KB_LYOT execution,
       along with actually changing between colemak and qwerty according to its state.
       This would require another macro to only flip the boolean state, in case I get stuck in colemak-hebrew or qwerty-english.
 
