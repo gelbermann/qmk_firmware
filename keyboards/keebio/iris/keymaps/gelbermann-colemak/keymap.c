@@ -1,4 +1,5 @@
 #include QMK_KEYBOARD_H
+// #include "quantum.h" // for rgb lighting
 
 // Layers
 #define COLEM     DF(_COLEMAK_DH)
@@ -10,7 +11,7 @@
 // Utils
 #define KC_UNDS                 LSFT(KC_MINS)  // _
 #define KC_NUM                  KC_NUMLOCK
-#define SWITCH_KEYBOARD_LAYOUT  KB_LYOT
+#define TOGGLE_KEYBOARD_LAYOUT  LYT_TOG
 
 
 enum layers_keycodes {
@@ -22,7 +23,7 @@ enum layers_keycodes {
 };
 
 enum macros_keycodes {
-  SWITCH_KEYBOARD_LAYOUT = SAFE_RANGE,
+  TOGGLE_KEYBOARD_LAYOUT = SAFE_RANGE,
   LALT_L,
   LALT_R,
   A_SHFT_L,
@@ -47,7 +48,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      KC_LSFT, KC_A,    KC_R,    KC_S,    KC_T,    KC_G,                               KC_M,    KC_N,    KC_E,    KC_I,    KC_O,    KC_RSFT,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_LCTL, KC_Z,    KC_X,    KC_C,    KC_D,    KC_V,    KC_ENT,           _______, KC_K,    KC_H,    KC_COMM, KC_DOT,  KC_SLSH, KC_BSPC,
+     KC_LCTL, KC_Z,    KC_X,    KC_C,    KC_D,    KC_V,    KC_ENT,           RGB_TOG, KC_K,    KC_H,    KC_COMM, KC_DOT,  KC_SLSH, KC_BSPC,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                     KC_LGUI, LOWER,   KC_ENT,                    KC_SPC,  RAISE,   KC_RALT
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
@@ -61,9 +62,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      KC_LSFT, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                               KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_RSFT,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_LCTL, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_ENT,           _______, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_BSPC,
+     KC_LCTL, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_ENT,           RGB_TOG, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_BSPC,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                                    KC_LGUI, LOWER,   KC_ENT,                    KC_SPC,  RAISE,   KC_RALT
+                                    KC_LGUI, LOWER,   KC_ENT,                    KC_SPC,  RAISE,   KC_LALT
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   ),
 
@@ -71,11 +72,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
      _______, RESET,   _______, _______, _______, _______,                            _______, _______, _______, _______, _______, KC_F11,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, KC_LBRC, KC_RBRC, _______,                            _______, KC_P7,   KC_P8,   KC_P9,   _______, _______,
+     _______, _______, _______, KC_LBRC, KC_RBRC, _______,                            _______, KC_7,    KC_8,    KC_9,    _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, KC_INS,  KC_VOLU, KC_LPRN, KC_RPRN, _______,                            KC_HOME, KC_P4,   KC_P5,   KC_P6,   KC_BSLS, KC_PIPE,
+     _______, KC_INS,  KC_VOLU, KC_LPRN, KC_RPRN, _______,                            KC_HOME, KC_4,    KC_5,    KC_6,    KC_BSLS, KC_PIPE,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, KC_MPLY, KC_VOLD, KC_LCBR, KC_RCBR, _______, _______,          _______, KC_END,  KC_P1,   KC_P2,   KC_P3,   KC_P0,   KC_DELETE,
+     _______, KC_MPLY, KC_VOLD, KC_LCBR, KC_RCBR, _______, _______,          _______, KC_END,  KC_1,    KC_2,    KC_3,    KC_0,    KC_DELETE,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                     _______, _______, _______,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
@@ -89,15 +90,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      _______, _______, KC_DLR,  KC_PERC, KC_CIRC, KC_MINS,                            KC_EQL,  KC_UP,   KC_LEFT, KC_RGHT, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, KC_EXLM, KC_AT,   KC_HASH, KC_UNDS, KB_LYOT,          _______, KC_PPLS, KC_DOWN, NAV,     _______, _______, _______,
+     _______, _______, KC_EXLM, KC_AT,   KC_HASH, KC_UNDS, LYT_TOG,          _______, KC_PPLS, KC_DOWN, NAV,     _______, _______, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-                                    _______, _______, KB_LYOT,                   _______, _______, _______
+                                    _______, NAV,     LYT_TOG,                   _______, _______, _______
                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
   ),
 
   [_NAV] = LAYOUT(
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-     _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
+     NAV,     _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      _______, _______, KC_WH_D, KC_MS_U, KC_WH_U, _______,                            _______, KC_P,    _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
@@ -122,34 +123,29 @@ void toggle_os_language(void) {
 
 void toggle_keyboard_layout(void) {
     language_state.colemak = !language_state.colemak;
-
-    set_single_persistent_default_layer(
-        language_state.colemak
-            ? _COLEMAK_DH
-            : _QWERTY
-    );
+    set_single_persistent_default_layer(language_state.colemak ? _COLEMAK_DH : _QWERTY);
 }
-
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch(keycode) {
-        // TODO: following two cases can be united with `toggle_keyboard_layout` with some careful thought
-        case _COLEMAK_DH:
-            if (record->event.pressed) {
-                language_state.colemak = true;
-                return false;
-            }
-            break;
+        /* ================== handle layers ================== */
 
+        case _COLEMAK_DH:
         case _QWERTY:
             if (record->event.pressed) {
-                language_state.colemak = false;
+                language_state.colemak = (keycode == _COLEMAK_DH);
                 return false;
             }
             break;
 
-        // https://docs.qmk.fm/#/feature_macros?id=using-macros-in-c-keymaps
-        case SWITCH_KEYBOARD_LAYOUT:
+        case _LOWER:
+        case _RAISE:
+            update_tri_layer(_LOWER, _RAISE, _NAV);
+            return false;
+
+        /* ================== handle macros ================== */
+
+        case TOGGLE_KEYBOARD_LAYOUT:
             if (record->event.pressed) {
                 toggle_keyboard_layout();
                 toggle_os_language();
@@ -189,33 +185,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
+/*
 layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, _LOWER, _RAISE, _NAV); // TODO: NOT WORKING ATM
+    if (IS_LAYER_ON_STATE(state, _COLEMAK_DH) && language_state.colemak) {
+        rgblight_setrgb(0xFF, 0xA2, 0x00);
+
+    } else if (IS_LAYER_ON_STATE(state, _QWERTY) && !language_state.colemak) {
+        rgblight_setrgb(0xB5, 0xB5, 0xB5);
+
+    } else {    // `language_state` and layer not synced
+        rgblight_setrgb(0x00, 0x00, 0x00);
+    }
+
+    return state;
 }
+*/
 
-// TODO: consider layer-change code for per-layer rgb lighting: https://docs.qmk.fm/#/custom_quantum_functions?id=layer-change-code
-// This would be VERY useful for debugging colemak/qwerty-hebrew/english issues!
-
-
-
-
-
-
-// TODO:
-/* Current status is:
-   2. NAV layer doesn't work at all.
-
-   3. WIP: customizing layer change:
-      I need to always be able to switch language via macro, and only do it via macro.
-      This way I can expand the macro to also switch between qwerty-colemak, so that I'm always in english-colemak and hebrew-qwerty.
-      This can be acheived by having some boolean state for english/hebrew, that is checked and updated on each KB_LYOT execution,
-      along with actually changing between colemak and qwerty according to its state.
-      This would require another macro to only flip the boolean state, in case I get stuck in colemak-hebrew or qwerty-english.
-
-      Something like this:
-      struct state_t {
-          bool english;
-          bool colemak;
-      };
-      ?
+/*
+TODO: possible improvements:
+- Capsword and other case-hacks
+- rgb light per layer (WIP)
 */
