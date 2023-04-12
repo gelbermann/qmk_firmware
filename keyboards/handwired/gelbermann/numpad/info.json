@@ -1,6 +1,6 @@
 {
     "manufacturer": "Niv Gelbermann",
-    "keyboard_name": "gelbermann/numpad",
+    "keyboard_name": "handwired/gelbermann/numpad",
     "maintainer": "Niv Gelbermann",
     "bootloader": "atmel-dfu",
     "diode_direction": "COL2ROW",
@@ -14,7 +14,7 @@
     },
     "matrix_pins": {
         "cols": ["C2", "C2", "C2", "C2"],
-        "rows": ["D1", "D1", "D1", "D1", "D1", "D1"]
+        "rows": ["D1", "D1", "D1", "D1"]
     },
     "processor": "atmega32u4",
     "url": "",
@@ -24,7 +24,7 @@
         "vid": "0xFEED"
     },
     "layouts": {
-        "LAYOUT_numpad_6x4": {
+        "LAYOUT_ortho_4x4": {
             "layout": [
                 { "matrix": [0, 0], "x": 0, "y": 0 },
                 { "matrix": [0, 1], "x": 1, "y": 0 },
@@ -37,16 +37,11 @@
                 { "matrix": [2, 0], "x": 0, "y": 2 },
                 { "matrix": [2, 1], "x": 1, "y": 2 },
                 { "matrix": [2, 2], "x": 2, "y": 2 },
+                { "matrix": [2, 3], "x": 3, "y": 2 },
                 { "matrix": [3, 0], "x": 0, "y": 3 },
                 { "matrix": [3, 1], "x": 1, "y": 3 },
                 { "matrix": [3, 2], "x": 2, "y": 3 },
-                { "h": 2, "matrix": [2, 3], "x": 3, "y": 2 },
-                { "matrix": [4, 0], "x": 0, "y": 4 },
-                { "matrix": [4, 1], "x": 1, "y": 4 },
-                { "matrix": [4, 2], "x": 2, "y": 4 },
-                { "matrix": [5, 0], "w": 2, "x": 0, "y": 5 },
-                { "matrix": [5, 2], "x": 2, "y": 5 },
-                { "h": 2, "matrix": [4, 3], "x": 3, "y": 4 }
+                { "matrix": [3, 3], "x": 3, "y": 3 }
             ]
         }
     }
